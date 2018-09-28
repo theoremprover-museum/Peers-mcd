@@ -1,0 +1,88 @@
+# Generated automatically from Makefile.in by configure.
+##### User configurable options #####
+# This is the Makefile.in (or Makefile configured with mpireconfig)
+# for the program peers_mcd on SGI IRIX.  
+
+ARCH        = IRIX
+COMM        = ch_p4
+INSTALL_DIR = /usr/apps/mpi
+CC        = gcc
+# CC	    = cc
+F77         = f77
+CLINKER   = gcc
+# CLINKER     = cc
+FLINKER     = f77
+#OPTFLAGS    = -DHP_UX -DTP_NAMES -DTP_SIGNAL -DTP_FORK -DTP_RUSAGE
+OPTFLAGS    = -DTP_NAMES -DTP_SIGNAL -DTP_FORK
+#
+LIB_PATH    = -L$(INSTALL_DIR)/lib/$(ARCH)/$(COMM)
+FLIB_PATH   = -Wl,-L,/usr/apps/mpi/lib/IRIX/ch_p4
+LIB_LIST    = -lmpi
+#
+INCLUDE_DIR = -I$(INSTALL_DIR)/include
+
+### End User configurable options ###
+
+CFLAGS  = -O $(OPTFLAGS) $(INCLUDE_DIR) -DMPI_$(ARCH)
+FFLAGS =  $(INCLUDE_DIR) $(OPTFLAGS)
+LIBS = $(LIB_PATH) $(LIB_LIST)
+FLIBS = $(FLIB_PATH) $(LIB_LIST)
+EXECS = peers_mcd
+
+#---------------------- .suffixes
+
+.c.o:
+	$(CC) $(CFLAGS) -c $*.c
+.f.o:
+	$(F77) $(FFLAGS) -c $*.f
+
+#---------------------- user defined files
+
+FILES =   clocks.c avail.c term.c misc.c io.c options.c unify.c ac.c dioph.c btu.c btm.c demod.c discrim.c eqp.c fpa.c interp.c list.c clause.c messages.c paramod.c peers.c pindex.c lrpo.c stats.c symbols.c 
+
+OBJECTS = clocks.o avail.o term.o misc.o io.o options.o unify.o ac.o dioph.o btu.o btm.o demod.o discrim.o eqp.o fpa.o interp.o list.o clause.o messages.o paramod.o peers.o pindex.o lrpo.o stats.o symbols.o
+
+#---------------------- make binary code
+
+default: peers_mcd
+
+peers_mcd: main.o $(OBJECTS) $(INSTALL_DIR)/include/mpi.h
+	$(CLINKER) $(CFLAGS) -o peers_mcd main.o $(OBJECTS) \
+	$(LIB_PATH) $(LIB_LIST)
+	size peers_mcd
+	chmod a+x peers_mcd
+	
+lint:
+	lint $(OPTFLAGS) -I$(INCLUDE_DIR)   main.c $(FILES)
+
+clean:
+	/bin/rm -f *.o *~ PI*
+
+
+#---------------------- dependencies
+
+main.o $(OBJECTS): Header.h
+main.o $(OBJECTS): Options.h
+main.o $(OBJECTS): Stats.h
+main.o $(OBJECTS): Misc.h
+main.o $(OBJECTS): Avail.h
+main.o $(OBJECTS): Term.h
+main.o $(OBJECTS): Clocks.h
+main.o $(OBJECTS): List.h
+main.o $(OBJECTS): Symbols.h
+main.o $(OBJECTS): Unify.h
+main.o $(OBJECTS): Clause.h
+main.o $(OBJECTS): Ac.h
+main.o $(OBJECTS): Io.h
+
+demod.o discrim.o eqp.o peers.o stats.o: Discrim.h
+ac.o btm.o btu.o io.o lrpo.o paramod.o symbols.o: Order.h
+fpa.o eqp.o paramod.o peers.o stats.o: Fpa.h
+paramod.o peers.o stats.o eqp.o: Paramod.h
+eqp.o peers.o pindex.o: Pindex.h
+eqp.o interp.o peers.o: Interp.h
+peers.o messages.o: Messages.h
+peers.o eqp.o: Peers.h
+demod.o eqp.o: Demod.h
+peers.o eqp.o: Eqp.h
+
